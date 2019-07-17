@@ -1,0 +1,34 @@
+---
+title: "데이터관리"
+categories: 
+  - Oracle
+last_modified_at: 2018-07-01T13:00:00+09:00
+toc: true
+---
+
+
+# 모르는 SQL 
+
+1. DML
+- MERGE
+- EXPLAIN PLAN
+- LOCK TABLE
+
+2. DDL
+- RENAME
+- TRUNCATE
+- AUDIT, NOAUDIT
+
+3. TRANSACTION CONTROL LANGUAGE
+- SAVEPOINT ( 부분 롤백 )
+- SET TRANSACTION
+
+4. SESSION CONTROL
+- ALTER SESSION
+- SET ROLE
+
+
+# 데이터 동시성 및 일관성
+
+다중 동시성이 일어났을 때 -> Lock이 걸리고 wait 상태가 되었을때
+undo 세그먼트를 이용하여 트랜잭션 시작 시점의 데이터를 보여줌 
