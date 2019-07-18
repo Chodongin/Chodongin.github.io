@@ -1,5 +1,5 @@
 ---
-title: "Oracle Structure"
+title: "SQL문 처리 순서"
 categories: 
   - Oracle
 last_modified_at: 2019-07-17T13:00:00+09:00
