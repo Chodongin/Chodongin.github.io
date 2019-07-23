@@ -534,3 +534,18 @@
 .page_top-button a{
   color: #dddddd;
 }
+
+.page_top-button a {
+  &:focus {
+    @extend %tab-focus;
+  }
+
+  &:visited {
+    color: $link-color-visited;
+  }
+
+  &:hover {
+    color: $link-color-hover;
+    outline: 0;
+  }
+}
