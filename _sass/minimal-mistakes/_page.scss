@@ -522,6 +522,15 @@
 .page_top-button {
   position: fixed;
   font-size: 20px;
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
+  right: 200px;
+  bottom: 100px;
+  border: 1px solid #aaaaaa;
+  border-radius: 40px;
+  text-align: center;
+}
+
+.page_top-button{
+  color: #aaaaaa;
 }
