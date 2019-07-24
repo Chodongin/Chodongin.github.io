@@ -75,7 +75,7 @@
   margin-bottom: 1em;
   position: fixed;
   top: $right-sidebar-width-narrow/2;
-  left: calc(100% - $right-sidebar-width-narrow*2);
+  left: calc(100% - 400px);
   @include breakpoint($large) {
     /*position: absolute;
     margin-right: -1 * $right-sidebar-width-narrow;
