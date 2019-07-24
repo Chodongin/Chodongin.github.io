@@ -525,7 +525,8 @@
   width: 100%;
   list-style: none;
   font-size: $type-size-6;
-
+  max-height: 600px;
+  overflow-y: auto;
   @include breakpoint($large) {
     font-size: $type-size-7;
   }
