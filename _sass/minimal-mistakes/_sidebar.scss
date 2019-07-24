@@ -74,14 +74,14 @@
 .sidebar__right {
   margin-bottom: 1em;
   position: fixed;
-  top: 200px;
+  top: $right-sidebar-width-narrow/2;
   right: 1 * $right-sidebar-width-narrow;
   @include breakpoint($large) {
-    /*position: absolute;*/
-    top: 0;
-    right: 0;
-    width: $right-sidebar-width-narrow;
+    /*position: absolute;
     margin-right: -1 * $right-sidebar-width-narrow;
+    top: 0;
+    right: 0;*/
+    width: $right-sidebar-width-narrow;
     padding-left: 1em;
     z-index: 10;
 
@@ -96,7 +96,7 @@
 
   @include breakpoint($x-large) {
     width: $right-sidebar-width;
-    margin-right: -1 * $right-sidebar-width;
+    /*margin-right: -1 * $right-sidebar-width;*/
   }
 }
 
