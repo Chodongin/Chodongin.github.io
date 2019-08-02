@@ -1,49 +1,66 @@
 ---
-title: "Oracle 구조"
+title: "Oracle Architecture 오라클 구조"
 categories: 
   - Oracle
 last_modified_at: 2019-07-16T13:00:00+09:00
 toc: true
 ---
 
-#  1. Oracle 구조
+#  1. Oracle 구조 이미지
 
 
 ## 1.1 Oracle 9i 구조
-
 ![Alt text](/assets/images/9iStructure.png "Oracle 9i")
+---------------------------------------
 
 ## 1.2 Oracle 10g 구조
-
 ![Alt text](/assets/images/10gStructure.png "Oracle 10g"){: width = "100%"}
+---------------------------------------
 
 ## 1.3 Oracle 11g 구조
-
 ![Alt text](/assets/images/11gStructure.png "Oracle 11g")
+---------------------------------------
 
 ## 1.3 Oracle 12c 구조
-
 ![Alt text](/assets/images/12cStructure.png "Oracle 12c")
+---------------------------------------
 
-
-#  2. 메모리 구조
-
+#  2.Oracle 구조 파헤치기
 ![Alt text](/assets/images/memory.png "Oracle 12c")
 
+## User Process? Server Process? Lustener?
 
+### User Process
+![Alt text](/assets/images/UserProcessServerProcss.png "Oracle 12c")
+#### Standard
+* 사용자가 오라클 Application Program을 실행 시켰을 때 사용되는 프로세스다. 
+  쉽게 말해 SQL을 실행 할 수 있는 프로그램이다. Ex) SQL*Plus, SQL Developer, 오렌지, Toad ...
+* 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
+* 사용자가 실행시킨 SQL문을 서버 프로세스에 전달 하고, 그 결과를 서버 프로세스로 부터 받는 역할을 수행 한다.
+
+#### Detail
+
+### Server Process
+
+#### Standard
+* User Process에게서 받은 SQL을 Oracle이 처리하도록 상호 작용을 수행하는 역할을 담당 한다.
+* 
+
+#### Detail
 
 
 인스턴스 : 메모리 구조(SGA, PGA) + 해당 인스턴스와 연관된 백그라운드 프로세스
  · SGA(System Global Area) : 인스턴스가 시작될 때 할당되는 공유 메모리 영역, 실제 작업들이 수행되는 공간
 (서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
  
+
  
 · PGA(Program Global Area) : 서버 프로세스, 백그라운드 프로세스 자신이 사용하는 데이터와 제어 정보를 저장하기 위한 갖는 자체적인 메모리 영역. 다른 프로세스들과 공유하지 않음
 1) Database Buffer Cache
 - 디스크의 데이터파일로부터 메모리로 데이터 복사.
 - 오라클의 주 작업공간
 - 모든 user는 데이터 버퍼 캐시에 대한 액세스 공유
-- User Process가 특정 데이터를 사용해야 할 경우 맨 처음 데이터 버퍼 캐시에서 찾음.
+- `User Process`가 특정 데이터를 사용해야 할 경우 맨 처음 데이터 버퍼 캐시에서 찾음.
 캐시에서 발견(캐시 적중)하지 못할(캐시 실패) 경우 디스크에서 데이터 블록을 캐시 버퍼로 복사함.
 - Database Buffer Cache의 상태
  . Pinned Buffer : 다른 사용자가 사용중. 새로운 사용자는 사용할 수 없음
@@ -116,3 +133,7 @@ PGA(Program Global Area)
 - SQL 처리를 위한 공간(정렬, 해쉬 등)
  
 * Shared Server 환경에서는 여러 클라이언트 유저가 서버 프로세스를 공유함. 그래서 이 경우 UGA는 SGA(쉐어드 풀 또는 라지 풀)로 이동하고 PGA는 Stack Space만 사용
+
+
+#참고 링크
+## 꿈꾸는 개발자, DBA http://www.gurubee.net/lecture/1081
