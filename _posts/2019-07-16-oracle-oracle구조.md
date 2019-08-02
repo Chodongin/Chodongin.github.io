@@ -32,21 +32,32 @@ toc: true
 
 ### User Process
 ![Alt text](/assets/images/UserProcessServerProcss.png "Oracle 12c")
-#### Standard
-* 사용자가 오라클 Application Program을 실행 시켰을 때 사용되는 프로세스다. 
-  쉽게 말해 SQL을 실행 할 수 있는 프로그램이다. Ex) SQL*Plus, SQL Developer, 오렌지, Toad ...
-* 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
-* 사용자가 실행시킨 SQL문을 서버 프로세스에 전달 하고, 그 결과를 서버 프로세스로 부터 받는 역할을 수행 한다.
 
-#### Detail
+#### 개념
+* 사용자가 오라클 어플리케이션 프로그램을 실행 시켰을 때 사용되는 프로세스다. 
+* 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
+* 사용자가 실행시킨 SQL문을 Server Process에 전달 하고, 그 결과를 Server Process로 부터 받는 역할을 수행 한다.
+
+#### 상세
+
+#### 요약
+> User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여 
+> 오라클 서버에 접속하게 되면 오라클 서버는 사용자마다 User Process를 생성한다.
 
 ### Server Process
 
-#### Standard
-* User Process에게서 받은 SQL을 Oracle이 처리하도록 상호 작용을 수행하는 역할을 담당 한다.
-* 
+#### 개념
+* 오라클 서버가 User Process의 SQL문을 처리하기 위해 생성하는 프로세스이다.
+* User Process에게서 받은 SQL문 처리를 담당 한다.
+* User Process와 오라클 서버가 서로 상호 작용을 수행하는 중간자 역할을 한다.
+* Dedicated Server 와 Shared Server 방식이 있다.
 
-#### Detail
+#### 상세
+
+#### 요약
+> Server Process란 
+> 
+
 
 
 인스턴스 : 메모리 구조(SGA, PGA) + 해당 인스턴스와 연관된 백그라운드 프로세스
