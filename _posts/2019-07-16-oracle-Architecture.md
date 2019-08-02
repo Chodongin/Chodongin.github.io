@@ -34,19 +34,19 @@ toc: true
 
 #### 개념
 ```
-* 사용자가 오라클 어플리케이션 프로그램을 실행 시켰을 때 사용되는 프로세스다. 
-* 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
-* 사용자가 실행시킨 SQL문을 Server Process에 전달 하고, 그 결과를 Server Process로 부터 받는 역할을 수행 한다.
+1. 사용자가 오라클 어플리케이션 프로그램을 실행 시켰을 때 사용되는 프로세스다. 
+2. 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
+3. 사용자가 실행시킨 SQL문을 Server Process에 전달 하고, 그 결과를 Server Process로 부터 받는 역할을 수행 한다.
 ```
 
 #### 상세
 ```
 ```
 #### 요약
-```
+>```
 > User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여 
 > 오라클 서버에 접속하게 되면 오라클 서버는 사용자마다 User Process를 생성한다.
-```
+>```
 
 ### 2.1.2 Server Process
 
