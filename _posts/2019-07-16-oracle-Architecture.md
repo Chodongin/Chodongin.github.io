@@ -38,6 +38,7 @@ toc: true
 ### 2.1.1 User Process
 ![Alt text](/assets/images/UserProcessServerProcss.png "Oracle 12c")
 
+
 #### - 개념
 ```
 1. 사용자가 오라클 어플리케이션 프로그램을 실행 시켰을 때 사용되는 프로세스다. 
@@ -78,13 +79,15 @@ toc: true
 2. Parsing -> Execution -> Fetching
 
 3. DDL/ DML 문장의 경우 Parsing -> Executing만 진행된다.
+
+4. SGA 메모리 영역 생성은 최초의 Oracle Server Process가 요청한다. 이후에는 OS Kernel이 관리한다. 
 ```
 
 [SQL 처리 순서](https://chodongin.github.io/oracle/oracle-SQL%EC%B2%98%EB%A6%AC-%EC%88%9C%EC%84%9C/)
  
 #### - 요약
   ```
-  Server Process란 
+  추후 예정
   ```
   
 
@@ -140,8 +143,74 @@ toc: true
 ```
   추후 예정
 ```
+***
+
+## 2.2 SGA와 PGA 
+### 2.2.1 SGA
+![Alt text](/assets/images/sga.png "Oracle 12c")
+#### - 개념
+  ```
+  1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
+  2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+  ```
+
+#### - 상세
+```
+  추후 예정
+```
+ 
+#### - 요약
+```
+  추후 예정
+```
+
+### 2.2.1 Database Buffer Cache
+![Alt text](/assets/images/sga.png "Oracle 12c")
+#### - 개념
+  ```
+  1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
+  2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+  ```
+
+#### - 상세
+```
+  추후 예정
+```
+ 
+#### - 요약
+```
+  추후 예정
+```
+
+### 2.2.1 PGA
+![Alt text](/assets/images/pga.png "Oracle 12c")
+![Alt text](/assets/images/pgaDetail.png "Oracle 12c")
+
+#### - 개념
+  ```
+  1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
+  2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+  
+  ```
+
+#### - 상세
+```
+  추후 예정
+```
+ 
+#### - 요약
+```
+  추후 예정
+```
 
 
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 인스턴스 : 메모리 구조(SGA, PGA) + 해당 인스턴스와 연관된 백그라운드 프로세스
  · SGA(System Global Area) : 인스턴스가 시작될 때 할당되는 공유 메모리 영역, 실제 작업들이 수행되는 공간
