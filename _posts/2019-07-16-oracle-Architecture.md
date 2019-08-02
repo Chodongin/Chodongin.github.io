@@ -21,6 +21,9 @@ toc: true
 ## 1.3 Oracle 12c 구조
 ![Alt text](/assets/images/12cStructure.png "Oracle 12c")
 
+***
+***
+
 #  2.Oracle 구조 파헤치기
 ![Alt text](/assets/images/memory.png "Oracle 12c")
 
@@ -30,15 +33,20 @@ toc: true
 ![Alt text](/assets/images/UserProcessServerProcss.png "Oracle 12c")
 
 #### 개념
+```
 * 사용자가 오라클 어플리케이션 프로그램을 실행 시켰을 때 사용되는 프로세스다. 
 * 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
 * 사용자가 실행시킨 SQL문을 Server Process에 전달 하고, 그 결과를 Server Process로 부터 받는 역할을 수행 한다.
+```
 
 #### 상세
-
+```
+```
 #### 요약
+```
 > User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여 
 > 오라클 서버에 접속하게 되면 오라클 서버는 사용자마다 User Process를 생성한다.
+```
 
 ### 2.1.2 Server Process
 
@@ -49,7 +57,10 @@ toc: true
 * Dedicated Server 와 Shared Server 방식이 있다.
 
 #### 상세
-
+* SQL 문장을 Server Process가 처리하는 과정
+* Parsing -> Execution -> Fetching
+* DDL/ DML 문장의 경우 Parsing -> Executing만 진행된다.
+  [SQL 처리 순서](https://chodongin.github.io/oracle/oracle-SQL%EC%B2%98%EB%A6%AC-%EC%88%9C%EC%84%9C/)
 #### 요약
 > Server Process란 
 > 
