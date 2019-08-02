@@ -11,26 +11,22 @@ toc: true
 
 ## 1.1 Oracle 9i 구조
 ![Alt text](/assets/images/9iStructure.png "Oracle 9i")
----------------------------------------
 
 ## 1.2 Oracle 10g 구조
 ![Alt text](/assets/images/10gStructure.png "Oracle 10g"){: width = "100%"}
----------------------------------------
 
 ## 1.3 Oracle 11g 구조
 ![Alt text](/assets/images/11gStructure.png "Oracle 11g")
----------------------------------------
 
 ## 1.3 Oracle 12c 구조
 ![Alt text](/assets/images/12cStructure.png "Oracle 12c")
----------------------------------------
 
 #  2.Oracle 구조 파헤치기
 ![Alt text](/assets/images/memory.png "Oracle 12c")
 
-## User Process? Server Process? Lustener?
+## 2.1 User Process? Server Process? Lustener?
 
-### User Process
+### 2.1.1 User Process
 ![Alt text](/assets/images/UserProcessServerProcss.png "Oracle 12c")
 
 #### 개념
@@ -44,7 +40,7 @@ toc: true
 > User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여 
 > 오라클 서버에 접속하게 되면 오라클 서버는 사용자마다 User Process를 생성한다.
 
-### Server Process
+### 2.1.2 Server Process
 
 #### 개념
 * 오라클 서버가 User Process의 SQL문을 처리하기 위해 생성하는 프로세스이다.
