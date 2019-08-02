@@ -50,8 +50,10 @@ toc: true
 ```
 ```
 #### - 요약
+ ```
   User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여  
   오라클 서버에 접속하게 되면 오라클 서버는 사용자마다 User Process를 생성한다. 
+ ```
 
 
 ### 2.1.2 Server Process
