@@ -2,10 +2,9 @@
 title: "언두 데이터"
 categories: 
   - Oracle
-last_modified_at: 2019-01-02T22
-.:25:00+09:00
+last_modified_at: 2019-01-02T22:00:00+09:00
 toc: true
----
+
 
 # 1. 언두데이터의 개념
 ![Alt text](/assets/images/undo1.png "Oracle 12c")
