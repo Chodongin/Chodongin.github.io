@@ -2,7 +2,7 @@
 title: "Oracle Architecture 오라클 구조"
 categories: 
   - Oracle
-last_modified_at: 2019-07-16T13:00:00+09:00
+last_modified_at: 2019-01-01T13:00:00+09:00
 toc: true
 ---
 
@@ -27,7 +27,9 @@ toc: true
 #  2.Oracle 구조 파헤치기
 ![Alt text](/assets/images/memory.png "Oracle 12c")
 ## 2.0 오라클 전체 구조
-> 사용자가 오라클 프로그램을 설치한 후에 실행시키면 오라클은 메모리와 디스크에 자신만의 특별한 구조를 만들게 되는데  
+> 사용자가 오라클 프로그램을 설치한 후에 실행시키면 오라클은  
+>   
+> 메모리와 디스크에 자신만의 특별한 구조를 만들게 되는데  
 > 이렇게 메모리와 디스크에 생성되는 구조를 오라클 용어로 Oracle Server라고 한다.  
 > 메모리부분에 생성되는 구조를 인스턴스(Instance)라고 부르고 디스크에 있는 여러가지 파일중   
 > 데이터 파일, 컨트롤 파일, 리두 로그파일을 합쳐서 데이터베이스 라고 부른다.  
@@ -43,20 +45,17 @@ toc: true
 ```
 1. 사용자가 오라클 어플리케이션 프로그램을 실행 시켰을 때 사용되는 프로세스다. 
 
-2. 사용자가 오라클 서버에 접속할 때마다 User Process가 생성 된다.
-
-3. 사용자가 실행시킨 SQL문을 Server Process에 전달 하고, 그 결과를 Server Process로 부터 받는 역할을 수행 한다.
+2. 사용자가 실행시킨 SQL문을 Server Process에 전달 하고, 그 결과를 Server Process로 부터 받는 역할을 수행 한다.
 ```
 
 #### - 상세
 ```
 ```
 #### - 요약
- ```
-  User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여  
-  오라클 서버에 접속하게 되면 오라클 서버는 사용자마다 User Process를 생성한다. 
- ```
-
+```
+ User Process란 사용자가 오라클 어플리케이션 프로그램(SQL*Plus, SQL Developer, 오렌지, Toad ...)을 사용하여  
+ 오라클 서버에 접속할 수 있게 해주는 프로세스다.
+```
 
 ### 2.1.2 Server Process
 
@@ -81,6 +80,8 @@ toc: true
 3. DDL/ DML 문장의 경우 Parsing -> Executing만 진행된다.
 
 4. SGA 메모리 영역 생성은 최초의 Oracle Server Process가 요청한다. 이후에는 OS Kernel이 관리한다. 
+
+5. 자신에게 작업을 요청한 User Process의 정보를 Session Memory 부분에 저장을 한 후 해당 SQL을 Parse 작업을 시작한다.
 ```
 
 [SQL 처리 순서](https://chodongin.github.io/oracle/oracle-SQL%EC%B2%98%EB%A6%AC-%EC%88%9C%EC%84%9C/)
@@ -146,6 +147,11 @@ toc: true
 ***
 
 ## 2.2 SGA와 PGA 
+```
+SGA(System Global Area) - 모든 사용자가 공유 가능하여 사용
+PGA(Program Global Area) - 사용자마다 공유하지 않고 개별적으로 사용
+```
+  
 ### 2.2.1 SGA
 ![Alt text](/assets/images/sga.png "Oracle 12c")
 #### - 개념
@@ -181,17 +187,36 @@ toc: true
 ```
   추후 예정
 ```
-
+  
+  ***
+   
 ### 2.2.1 PGA
 ![Alt text](/assets/images/pga.png "Oracle 12c")
+**PGA DETAIL**
 ![Alt text](/assets/images/pgaDetail.png "Oracle 12c")
 
 #### - 개념
   ```
-  1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
-  2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+  1. Program Global Area의 약자이다.
+
+  2. PGA는 각 Process들이 개별적으로 사용하는 메모리 공간이다.
+
+  3. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
+
+  4. 주로 정렬관련 작업등이 이루어진다.
+
+  5. Server Process가 사용하는 PGA는 크게 SQL Work Area, Private SQL Area, Session Memory로 나뉜다.
+    5.1 Private SQL Area
+      Server Process는 자신에게 작업을 요청한 User Process의 정보를 Session Memory 부분에 저장을 한 후 해당 SQL을 Parse 작업을 시작한다.
+      
+    5.2 SQL Work Area
+
   
+
   ```
+
+
+
 
 #### - 상세
 ```
