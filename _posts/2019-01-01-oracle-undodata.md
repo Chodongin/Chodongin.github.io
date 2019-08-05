@@ -26,7 +26,7 @@ toc: true
 | `fixed` | 브라우저 창을 기준으로 배치 |  |
 
 ## 2.1 작업 롤백
-![Alt text](/assets/images/undo1.png "Oracle 12c")
+![Alt text](/assets/images/Undo1.png "Oracle 12c")
 ### - 개념
 ```
 1. 특정 작업을 수행한 후 커밋을 수행하지 않고 롤백을 수행하게 되면 작업 수행전의 데이터로 복구되는 기능이다. 
