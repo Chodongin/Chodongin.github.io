@@ -158,11 +158,19 @@ toc: true
 ### 2.2.1 SGA( System Global Area )
 ![Alt text](/assets/images/sga.png "Oracle 12c")
 #### - 개념
-  ```
+```
   1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
-  2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
-  ```
 
+  2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+
+  3. 크게 Shared Pool, Data Buffer Cache, Redo Log Buffer, Large Pool, Java Pool, Streams Pool 로 나뉜다.
+```
+
+| 항목 | 목적 |
+|:---:|:---|
+| **Shared Pool** | SQL의 빠른 파싱(Parsing) |  
+| **데이터 버퍼 캐쉬** | 데이터 블록의 빠른 엑세스(재사용 포함) |  
+| **리두 로그 버퍼** | 변경 사항을 로그로 기록하여 장애 발생시 복구 |  
 #### - 상세
 ```
   추후 예정
@@ -190,10 +198,35 @@ toc: true
 ```
   추후 예정
 ```
-  
+
+### 2.2.3 Shared Pool
+#### - 개념
+```
+1. SQL을 수행하는 과정에서 파싱의 역할을 수행한다.
+  *파싱 : SQL을 수행 전 수행할 수 있는 SQL인지 검증하고 분석하는 단계
+2. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+```
+| 항목 | 목적 |
+|:---:|:------------------|
+| **Shared Pool** | SQL의 빠른 파싱(Parsing) |  
+| **데이터 버퍼 캐쉬** | 데이터 블록의 빠른 엑세스(재사용 포함) |  
+| **리두 로그 버퍼** | 변경 사항을 로그로 기록하여 장애 발생시 복구 |  
+
+#### - 상세
+| 항목 | 내용 |
+|:---:|:-----------------------------------|
+| **소프트 파싱** | 검색 단계에서 기존에 동일한 SQL이 수행된 걸 확인하고 해당 SQL의 파싱 정보를 재사용 |  
+| **하드 파싱** | 기존에 동일한 SQL이 수행되었지만 메모리가 부족하여 LRU 알고리즘에 의해 버려지거나 수행된 적이 없는 SQL로 다시 파싱을 수행 |  
+ 
+#### - 요약
+
+| 목적 | 목적 달성을 위한 요소 |
+|:---:|:-----------------------------------|
+| **파싱(SQL Parsing)을 효과적으로 수행** | - 이전에 수행된 SQL에 대해서 소프트 파싱 유도  - 하드 파싱 시 적은 자원 사용 |  
+
   ***
    
-### 2.2.6 PGA ( Program Global Area )
+### 2.2.8 PGA ( Program Global Area )
 ![Alt text](/assets/images/pga.png "Oracle 12c")
 **PGA DETAIL**
 ![Alt text](/assets/images/pgaDetail.png "Oracle 12c")
@@ -210,12 +243,11 @@ toc: true
   
   5. User Process가 리스너를 통해 Server Process를 호출하면 Server Process가 PGA 공간을 할당해 SQL 작업공간을 생성한다.
 
-  6. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
-
-  7. 주로 정렬관련 작업등이 이루어진다.
+  6. 주로 정렬관련 작업등이 이루어진다.
 
   ```
 
+Program Global Areas (PGA)
 
 
 
@@ -230,8 +262,11 @@ toc: true
     1.2 SQL Work Area
       1.2.1 Sort관련 작업(Sort Area)이나 Hash 관련 작업이 있을 경우 이 곳에서 작업을 수행하게 되는 공간이다.
 
-  2. 오라클 Instance에 할당 되어 있는 모든 PGA 메모리들을 total instance PGA memory라 부른다. 
+  3. 오라클 서버에서 동작하는 모든 Process들 
+     즉, Server Process뿐만 아니라 Background Process들도 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
   
+  4. 보통 SQL Work Area, Private SQL Area, UGA로 나뉘는 구조는 Server Process의 PGA를 보여준다.
+     모든 PGA가 해당 구조를 갖고 있는 것은 아니다.
 ```
 
 ![Alt text](/assets/images/PGAdetail2.png "Oracle 12c")
@@ -241,7 +276,7 @@ toc: true
   추후 예정
 ```
 
-### 2.2.7 PGA의 관리
+### 2.2.9 PGA의 관리
 
 #### - 개념
 | 항 목 | 필수여부 | 설정값 | 내 용 |
@@ -273,15 +308,28 @@ WORKAREA_SIZE_POLICY를 AUTO로 설정한 경우
 
 #### - 요약
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-인스턴스 : 메모리 구조(SGA, PGA) + 해당 인스턴스와 연관된 백그라운드 프로세스
- · SGA(System Global Area) : 인스턴스가 시작될 때 할당되는 공유 메모리 영역, 실제 작업들이 수행되는 공간
-(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
- 
 
- 
-· PGA(Program Global Area) : 서버 프로세스, 백그라운드 프로세스 자신이 사용하는 데이터와 제어 정보를 저장하기 위한 갖는 자체적인 메모리 영역. 다른 프로세스들과 공유하지 않음
 1) Database Buffer Cache
 - 디스크의 데이터파일로부터 메모리로 데이터 복사.
 - 오라클의 주 작업공간
