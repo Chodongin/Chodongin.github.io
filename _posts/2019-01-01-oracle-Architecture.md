@@ -96,13 +96,13 @@ toc: true
 ### 2.1.3 Listener
 
 #### - 개념
-  ```
+```
   1. 네트워크를 이용하여 클라이언트 어플리케이션에서 Server Process와 연결해주는 네트워크 관리자다.
   
   2. 새롭게 생성된 하나의 Server Process에 이 요청을 보내어 둘 사이에 세션이 수립되도록 합니다.
   
   3. 세션이 수립되고 둘이 알아서 요청과 응답을 주고 받고, 리스너는 관여하지 않는다.
-    ```
+```
 
 #### - 상세
 ```
@@ -206,7 +206,7 @@ toc: true
   
   3. Server Process가 시작되었을 때 오라클이 Server Process에 생성한다.
 
-  4. 각각의 하나의 Server Process에 하나의 PGA가 있다.
+  4. 각각의 Server Process마다 PGA가 하나씩 있고 Server Process가 독자적으로 사용하는 메모리 영역이다.
   
   5. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
 
