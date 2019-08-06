@@ -155,7 +155,7 @@ toc: true
 | **SGA(System Global Area)** | 모든 사용자가 공유 가능하여 사용 |  
 | **PGA(Program Global Area)** | 사용자마다 공유하지 않고 개별적으로 사용 |  
   
-### 2.2.1 SGA
+### 2.2.1 SGA( System Global Area )
 ![Alt text](/assets/images/sga.png "Oracle 12c")
 #### - 개념
   ```
@@ -193,28 +193,24 @@ toc: true
   
   ***
    
-### 2.2.1 PGA
+### 2.2.1 PGA ( Program Global Area )
 ![Alt text](/assets/images/pga.png "Oracle 12c")
 **PGA DETAIL**
 ![Alt text](/assets/images/pgaDetail.png "Oracle 12c")
 
 #### - 개념
   ```
-  1. Program Global Area의 약자이다.
+  1. PGA는 각 Process들이 개별적으로 사용하는 메모리 공간이다.
 
-  2. PGA는 각 Process들이 개별적으로 사용하는 메모리 공간이다.
-
-  3. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
-
-  4. 주로 정렬관련 작업등이 이루어진다.
-
-  5. Server Process가 사용하는 PGA는 크게 SQL Work Area, Private SQL Area, Session Memory로 나뉜다.
-    5.1 Private SQL Area
-      Server Process는 자신에게 작업을 요청한 User Process의 정보를 Session Memory 부분에 저장을 한 후 해당 SQL을 Parse 작업을 시작한다.
-      
-    5.2 SQL Work Area
-
+  2. Server Process의 데이터와 제어 정보를 갖고있는 메모리 영역이다.
   
+  3. Server Process가 시작되었을 때 오라클이 Server Process에 생성한다.
+
+  4. 각각의 하나의 Server Process에 하나의 PGA가 있다.
+  
+  5. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
+
+  6. 주로 정렬관련 작업등이 이루어진다.
 
   ```
 
@@ -223,7 +219,17 @@ toc: true
 
 #### - 상세
 ```
-  추후 예정
+  1. Server Process가 사용하는 PGA는 크게 SQL Work Area, Private SQL Area, UGA로 나뉜다.
+    1.1 Private SQL Area
+      1.1.1 Server Process는 자신에게 작업을 요청한 User Process의 정보를 Session Memory 부분에 저장을 한 후 해당 SQL을 Parse 작업을 시작한다.
+      1.1.2 만약 Bind 변수등이 있을 경우 해당 Bind 변수 값을 Private SQL Area에 보관을 하고 Query의 실행 상태정보와 Query를 수행하면서 
+            임시로 정보를 저장해야 하는 경우 이 공간을 사용하게 된다.
+            * Bind 변수란? 사용자가 입력한 값에 따라 달라지는 SQL WHERE문에 들어오는 조건 값 
+    1.2 SQL Work Area
+  
+
+  2. 오라클 Instance에 할당 되어 있는 모든 PGA 메모리들을 total instance PGA memory라 부른다. 
+  
 ```
  
 #### - 요약
