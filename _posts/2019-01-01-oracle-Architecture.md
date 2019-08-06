@@ -108,10 +108,10 @@ toc: true
 ```
 1. 추후 예정
 ```
- #### - 요약
-  ```
-  추후 예정
-  ```
+#### - 요약
+```
+ 추후 예정
+```
 
 ### 2.1.4 Dedicated Server Process 와 Shared Server Process
 
@@ -208,9 +208,11 @@ toc: true
 
   4. 각각의 Server Process마다 PGA가 하나씩 있고 Server Process가 독자적으로 사용하는 메모리 영역이다.
   
-  5. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
+  5. User Process가 리스너를 통해 Server Process를 호출하면 Server Process가 PGA 공간을 할당해 SQL 작업공간을 생성한다.
 
-  6. 주로 정렬관련 작업등이 이루어진다.
+  6. Server Process나 Background Process들은 전부 각각의 PGA를 가지고 각자의 용도에 맞게 사용하고 있다.
+
+  7. 주로 정렬관련 작업등이 이루어진다.
 
   ```
 
@@ -360,4 +362,5 @@ PGA(Program Global Area)
 
 
 #참고 링크
-## 꿈꾸는 개발자, DBA http://www.gurubee.net/lecture/1081
+[꿈꾸는 개발자, DBA](http://www.gurubee.net/lecture/1081)
+[오라클 PGA DOC](https://docs.oracle.com/en/database/oracle/oracle-database/19/admin/managing-memory.html#GUID-24312D78-522D-4C08-8934-820BE18D34C7)
