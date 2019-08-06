@@ -242,8 +242,8 @@ toc: true
 ### 2.2.
 
 
-| 항 목 | 필수  여부 | 설정값 | 내 용 |
-|:---:|:-:|:---:|:--------------------|
+| 항 목 | 필수여부 | 설정값 | 내 용 |
+|:---:|:--:|:----:|:------------------|
 | **WORKAREA_SIZE_POLICY** | X | AUTO  (Default 값) |  MANUAL과 AUTO로 설정할 수 있으며 AUTO로 설정했을 경우에는 PGA_AGGREGATE_TARGET 파라메터를 이용하여 PGA의 크기를 설정하겠다는 뜻이다. MANUAL로 설정할 경우는 SORT_AREA_SIZE 파라메터를 이용하여 정렬 공간을 설정하게 된다. 오라클 10g부터는 기본 값이 AUTO로 설정된다. |
 | **PGA_AGGREGATE_TARGET** | O | 물리  메모리의  10%~20% | 모든 세션의 PGA 크기의 합을 설정하는 파라메터이며, PGA_AGGREGATE_TARGET 파라메터에서 지정한 크기까지 오라클이 PGA를 자동으로 관리한다. |
 | **PGA_AGGREGATE_LIMIT** | O | Default 사용 | PGA_AGGREFATE_TARGET 파라메터로는 실제 PGA의 사용량을 제한하지 못하며 PGA_AGGREGATE_LIMIT 파라메터로 실제 PGA의 크기를 제한할 수 있다. |
