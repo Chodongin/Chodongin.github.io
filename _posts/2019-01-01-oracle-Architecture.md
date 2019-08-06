@@ -226,23 +226,30 @@ toc: true
             임시로 정보를 저장해야 하는 경우 이 공간을 사용하게 된다.
             * Bind 변수란? 사용자가 입력한 값에 따라 달라지는 SQL WHERE문에 들어오는 조건 값 
     1.2 SQL Work Area
-  
+      1.2.1 Sort관련 작업(Sort Area)이나 Hash 관련 작업이 있을 경우 이 곳에서 작업을 수행하게 되는 공간이다.
 
   2. 오라클 Instance에 할당 되어 있는 모든 PGA 메모리들을 total instance PGA memory라 부른다. 
   
 ```
- 
+
+![Alt text](/assets/images/PGAdetail2.png "Oracle 12c")
+
 #### - 요약
 ```
   추후 예정
 ```
 
+### 2.2.
 
 
-
-
-
-
+| 항 목 | 필수  여부 | 설정값 | 내 용 |
+|:---:|:-:|:---:|:--------------------|
+| **WORKAREA_SIZE_POLICY** | X | AUTO  (Default 값) |  MANUAL과 AUTO로 설정할 수 있으며 AUTO로 설정했을 경우에는 PGA_AGGREGATE_TARGET 파라메터를 이용하여 PGA의 크기를 설정하겠다는 뜻이다. MANUAL로 설정할 경우는 SORT_AREA_SIZE 파라메터를 이용하여 정렬 공간을 설정하게 된다. 오라클 10g부터는 기본 값이 AUTO로 설정된다. |
+| **PGA_AGGREGATE_TARGET** | O | 물리  메모리의  10%~20% | 모든 세션의 PGA 크기의 합을 설정하는 파라메터이며, PGA_AGGREGATE_TARGET 파라메터에서 지정한 크기까지 오라클이 PGA를 자동으로 관리한다. |
+| **PGA_AGGREGATE_LIMIT** | O | Default 사용 | PGA_AGGREFATE_TARGET 파라메터로는 실제 PGA의 사용량을 제한하지 못하며 PGA_AGGREGATE_LIMIT 파라메터로 실제 PGA의 크기를 제한할 수 있다. |
+| **_SMM_MAX_SIZE** | X | Default 사용 | 하나의 서버 프로세스가 사용 가능한 최대 SQL 작업 영역의 크기를 지정하며 각각의 서버 프로세스는 해당 값을 초과 하여 SQL 작업 영역을 할당 받을 수 없다. 해당 값은 PGA_AGGREATE_TARGET 파라메터 값에 의해 자동으로 설정된다. |
+| **_SMM_PX_SIZE** | X | Default 사용 | 하나의 병렬 실행에 속한 병력 SLAVE 프로세스들이 사용 가능한 최대 SQL 작업 영역의 크기를 의미하며 해당 값은 전체 총합을 의미한다. 해당 파라메터     P 또한 PGA_AGGREGATE_TIRGET 파라메터 값에 의해 자동으로 할당된다. |
+| **_SMM_PX_SIZE** | X | Default 사용 | 하나의 서버 프로세스가 사용 가능한 최대 PGA 크기를 지정 하며 각각의 서버 프로세스는 해당 값을 초과하여 PGA 영역을 할당 받을 수 없다. 해당 값은 PGA_AGGREATE_TARGET 파라메터 값에 의해 자동으로 설정된다. |
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
