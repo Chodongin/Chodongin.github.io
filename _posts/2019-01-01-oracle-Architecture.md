@@ -2,7 +2,7 @@
 title: "Oracle Architecture 오라클 구조"
 categories: 
   - Oracle
-last_modified_at: 2019-01-01T13:00:00+09:00
+last_modified_at: 2019-01-01T23:00:00+09:00
 toc: true
 ---
 
@@ -69,6 +69,7 @@ toc: true
 
   4. Dedicated Server 와 Shared Server 방식이 있다.
 
+  5. SQL문과 기타 정보를 저장 하기 위해 자신만의 메모리 공간인 PGA를 이용한다.
   ```
 
 #### - 상세
@@ -147,10 +148,12 @@ toc: true
 ***
 
 ## 2.2 SGA와 PGA 
-```
-SGA(System Global Area) - 모든 사용자가 공유 가능하여 사용
-PGA(Program Global Area) - 사용자마다 공유하지 않고 개별적으로 사용
-```
+오라클이 사용하는 메모리는 크게 두가지가 존재한다.
+
+| 종류 | 내용 |
+|:---:|:---|
+| **SGA(System Global Area)** | 모든 사용자가 공유 가능하여 사용 |  
+| **PGA(Program Global Area)** | 사용자마다 공유하지 않고 개별적으로 사용 |  
   
 ### 2.2.1 SGA
 ![Alt text](/assets/images/sga.png "Oracle 12c")
