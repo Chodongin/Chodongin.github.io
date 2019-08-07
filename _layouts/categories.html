@@ -10,10 +10,9 @@ layout: archive
     {% assign categories_max = category[1].size %}
   {% endif %}
 {% endfor %}
-{% print(category) %}
 
 <script>
-  console.log("{{tags}}");
+  console.log("{{category}}");
 </script>
 <ul class="taxonomy__index">
   {% for i in (1..categories_max) reversed %}
