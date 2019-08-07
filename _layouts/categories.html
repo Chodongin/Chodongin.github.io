@@ -6,9 +6,6 @@ layout: archive
 
 {% assign categories_max = 0 %}
 {% for category in site.categories %}
-<script>
-  console.log("{{ category }}");
-</script>
   {% if category[1].size > categories_max %}
     {% assign categories_max = category[1].size %}
   {% endif %}
