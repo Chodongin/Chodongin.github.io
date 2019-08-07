@@ -176,7 +176,9 @@ toc: true
 | **리두 로그 버퍼** | 변경 사항을 로그로 기록하여 장애 발생시 복구 |  
 
 #### - 상세
+
 > SGA의 관리
+
 ``` js
 SGA의 변경 
 SQL> ALTER SYSTEM SET parameter_name = 변경값;
@@ -299,6 +301,7 @@ Program Global Areas (PGA)
 ### 2.2.9 PGA의 관리
 
 #### - 개념
+
 | 항 목 | 필수여부 | 설정값 | 내 용 |
 |:---:|:--:|:----:|:------------------|
 | **WORKAREA_SIZE_POLICY** | X | AUTO  (Default 값) |  MANUAL과 AUTO로 설정할 수 있으며 AUTO로 설정했을 경우에는 PGA_AGGREGATE_TARGET 파라메터를 이용하여 PGA의 크기를 설정하겠다는 뜻이다. MANUAL로 설정할 경우는 SORT_AREA_SIZE 파라메터를 이용하여 정렬 공간을 설정하게 된다. 오라클 10g부터는 기본 값이 AUTO로 설정된다. |
