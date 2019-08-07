@@ -250,7 +250,7 @@ SQL> show sga
    
 ### 2.2.8 PGA ( Program Global Area )
 ![Alt text](/assets/images/pga.png "Oracle 12c")
-**PGA DETAIL**
+**PGA DETAIL**  
 ![Alt text](/assets/images/pgaDetail.png "Oracle 12c")
 
 #### - 개념
