@@ -5,9 +5,42 @@ categories:
 last_modified_at: 2019-01-01T13:00:00+09:00
 toc: true
 ---
-# 모든 과정 Server Process에 의해 이뤄진다 !
+**모든 과정 Server Process에 의해 이뤄진다 !**
 
 ![Alt text](/assets/images/select turn.png "Optional title")
+# 1. SQL 문장 처리 과정
+## 1.1 순서
+### 개념
+```
+1. 사용자가 User Process에서 SQL문장을 수행한다. 
+
+2. User Process가 SQL 문장을 Server Process로 전달한다.
+
+3. Server Process는 Syntax Check( 문법 검사 ), Semantic Check(의미 검사)를 한 후 권한 검사를 하게 된다.
+
+4. Library Cache에서 공유되어 있는 실행계획이 있는지 검사한다.
+------------------------------------Soft Parsing--------------------------------------------------
+
+
+5. Oprimizer가 SQL문에 대한 실행계획을 생성한다.
+------------------------------------Hard Parsing--------------------------------------------------
+
+
+6. Optimizer가 생성한 실행계획을 SQL 엔진이 실제 실행할 수 있는 코드(또는 프로시저 ) 형태로 포맷팅한다.
+
+7. SQL 엔진이 SQL을 실행한다.
+
+6. 
+```
+
+| 항목 | 내용 |
+|:---:|:---|
+| **Syntax Check** | 키워드 검사라고도 하며 SELECT, FROM, WHERE 같이 Oracle에서 미리 정해놓은 키워드 부분을 검사한다. |  
+| **Semantic Check** | 테이블 이름, 컬럼 이름처럼 사용자마다 다른 부분을 검사한다. |  
+| **권한 검사** | 어떤 사용자가 해당 오브젝트에 접근 할 수 있는 권한이 있는지 없는지를 확인한다. |  
+
+### 상세
+### 요약
 
 # SELECT 문의 처리순서
 
