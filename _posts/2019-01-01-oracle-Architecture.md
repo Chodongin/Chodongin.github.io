@@ -2,6 +2,8 @@
 title: "Oracle Architecture 오라클 구조"
 categories: 
   - Oracle
+tags:
+  - oracleStructure
 last_modified_at: 2019-01-01T23:00:00+09:00
 toc: true
 ---
@@ -27,13 +29,14 @@ toc: true
 #  2.Oracle 구조 파헤치기
 ![Alt text](/assets/images/memory.png "Oracle 12c")
 ## 2.0 오라클 전체 구조
-> 사용자가 오라클 프로그램을 설치한 후에 실행시키면 오라클은  
->   
-> 메모리와 디스크에 자신만의 특별한 구조를 만들게 되는데  
-> 이렇게 메모리와 디스크에 생성되는 구조를 오라클 용어로 Oracle Server라고 한다.  
-> 메모리부분에 생성되는 구조를 인스턴스(Instance)라고 부르고 디스크에 있는 여러가지 파일중   
-> 데이터 파일, 컨트롤 파일, 리두 로그파일을 합쳐서 데이터베이스 라고 부른다.  
-> 정리 하면 Oracle Server는 크게 Instance와 Database로 나뉜다.
+```
+ 사용자가 오라클 프로그램을 설치한 후에 실행시키면 오라클은  
+ 메모리와 디스크에 자신만의 특별한 구조를 만들게 되는데  
+ 이렇게 메모리와 디스크에 생성되는 구조를 오라클 용어로 Oracle Server라고 한다.  
+ 메모리부분에 생성되는 구조를 인스턴스(Instance)라고 부르고 디스크에 있는 여러가지 파일중   
+ 데이터 파일, 컨트롤 파일, 리두 로그파일을 합쳐서 데이터베이스 라고 부른다.  
+ 정리 하면 Oracle Server는 크게 Instance와 Database로 나뉜다.
+```
 
 ## 2.1 User Process? Server Process? Listener?
 
