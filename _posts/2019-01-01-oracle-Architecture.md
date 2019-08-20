@@ -218,19 +218,17 @@ SQL> show sga
 ![Alt text](/assets/images/sga.png "Oracle 12c")
 #### - 개념
   ```
-  1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
-
-  2. 물리적인 I/O를 최소화하기 위해 최근에 사용한 블록에 대한 정보를 저장하는 메모리의 일정 영역 
-
-  3. Datafile 들로부터 읽은 Data Block의 복사본을 담고 있는 SGA의 한 영역
+  1. Datafile 들로부터 읽은 Data Block의 복사본을 담고 있는 SGA의 한 영역
   
-  4. 실제 작업들이 수행되는 공간(서버 프로세스들과 백그라운드 프로세스들이 공유하는 공간)
+  2. 인스턴스에 동시에 연결된 모든 사용자 프로세스는 Database Buffer Cache에 대한 엑세스를 공유한다.
 
-  5. LRU 알고리즘을 사용해서 제한적인 메모리 공간을 사용한다.
+  3. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
+
+  4. 물리적인 I/O를 최소화하기 위해 최근에 사용한 블록에 대한 정보를 저장하는 메모리의 일정 영역 
+
+  5. LRU List와 LRUW List(Dirty List) 두가지 List로 구성 되어있다.
   ```
   
-
-
 #### - 상세
 ![Alt text](/assets/images/buffer_cache_hashtable.png "Oracle 12c")
 ```
@@ -272,83 +270,22 @@ Hash table -> Hash bucket -> buffer header chain -> buffer header -> buffer body
                       다른 사용자는 사용할 수 없음.
 
     - Free Buffer : 사용가능 Buffer
-
-  4. Cache Buffer Chain
-    
-    - 각 Database Buffer는 Data Block Address(DBA)가 Hash Function에 의해 해시되어 Hash Table에 할당되어 관리되는데, 이를 Cache Buffer    Chain List라 한다.
-
-    - 즉 Cache Buffer Chain List란 양방향의 링크된 리스트로, 인스턴스가 시작될 때 할당되는 Hash Table로 구성된다.
-
-    -  Hash Table 안의 Bucket은 각 Database Block Buffer들의 Header 정보를 가지며, 이 각 Buffer들은 LRU List 나 
-       LRUW List(Dirty List)의 한 가지에 속한다. 
-
-    - 각 해시 체인은 래치(Latch)에 의해 보호된다.
    
    * 데이터 블록 주소(DBA, Data Block Address) : DB 버퍼 캐시 내에서 데이터 블록을 해싱하기 위해 사용되는 키 값
    
-  5. 래치(Latch) : 같은 리소스에 대한 액세스를 직렬화(Serialization)하여 리소스를 보호 하기 위한 Lock 메커니즘
+  5. Latch : 같은 리소스에 대한 액세스를 직렬화(Serialization)하여 리소스를 보호 하기 위한 Lock 메커니즘
      - 동시에 여러 프로세스가 넓은 범위의 인덱스나 넓은 범위의 테이블에 대해 스캔을 수행할 경우.
        즉, 비효율적인 SQL문이 실행 될 경우 latch: cache buffers chains 이벤트를 대기하게 된다. 
 
      * cache Buffers Chains Latch : 두개 이상의 프로세스가 같은 해시 체인으로 진입해 새로운 버퍼 블록을                                  
                                     연결/해제하는 작업이 동시에 작업할 때 발생하는 문제를 방지하기 위한 래치
-
-  6. LRU List(Least Recently Used) :  최근에 읽혀진 Datafile Block 을 Buffer Cache에 보관하고, 새로운 Block 이 
-
-                                      파일에서 읽혀질 필요가 있으면 사용한지 가장 오래된 버퍼들부터 메모리에서 없어지도록 
-
-                                      관리하기 위한 Buffer Cache 내의 Block List 관리 방법.
-
-                                      LRU(Least Recently Used) list의 버퍼들은 Free buffer, Pinned Buffer, Dirty Buffe중 하나로 존재하게 됩니다.
-
-                                    -메인 리스트 : 사용된 버퍼들의 리스트, Hot 영역과 Cold 영역으로 나눕니다. 
-                                    -보조 리스트 : 미사용된 버퍼들이나, DBWR에 의해 기록된 버퍼들의 리스트(Free list)
-
-
-  7. LRUW(LRU Write) List = Dirty list        :  - 수정되어 디스크에 반영되어야 할 블록들의 리스트.
-                                                
-                                                 - LRUW에 모인 Dirty Buffer는 DBWR에 의해 디스크로 쓰여지고 나면 이 Buffer는  
-
-                                                  이 버퍼들이 차츰 다른 테이블의 내용들이 읽혀 짐에 따라 LRU의 tail부분인 LRU(Lease Recent Used)로 이동되게 되는 겁니다.
-
-                                                  만약 사용자가 대량의 데이터를 질의하여 버퍼가 필요한데 빈 버퍼가 없다면 제일 사용된  
-                                                  
-                                                  빈도가 작은 블록을 찾기 위해 LRU 알고리즘에 의해 LRU list의 맨 끝인 tail 부분부터 검색하기 시작 합니다.
-
-                                                   Free로 Mark 되어 다시 사용될 수 있도록 LRU List의 끝부분에 위치하게 됩니다.
-
-                                                 - 처음엔 버퍼가 Free 상태인데 사용자가 질의를 해서 디스크에서 테이블의 내용을 읽으면 이 블록들은 
-                                                 LRU에서 가장 최근에 읽은 것 이므로 HEADER 부분(MRU, Most recently used)에 위치하게 됩니다.
-                                                 
-                                                 -메인 리스트 : 변경된 버퍼들의 리스트
-                                                -보조 리스트 : 현재 DBWR에 의해 기록 중인 버퍼들의 리스트
-
-
-
-  
-
-  이 버퍼들이 차츰 다른 테이블의 내용들이 읽혀 짐에 따라 LRU의 tail부분인 LRU(Lease Recent Used)로 이동되게 되는 겁니다.
-
-  만약 사용자가 대량의 데이터를 질의하여 버퍼가 필요한데 빈 버퍼가 없다면 제일 사용된 빈도가 작은 블록을 찾기 위해 LRU 알고리즘에 의해 LRU list의 맨 끝인 tail 부분부터 검색하기 시작 합니다.
-
-  - Pinned Buffer : 현재 사용자가 사용 중이므로 재사용 될 수 없는 상태
-
-  - Free Buffer : Dirty Buffer등이 데이터파일(디스크)에 기록되어져서 Free로 Mark가 되어 사용될 수 있는 상태의 버퍼 또는 Modify 되지 않아 사용가능 한 상태.
-
-  - Dirty Buffer : 사용자가 사용하여 내용이 변경되었지만 아직 디스크에 기록되지 않은 버퍼를 나타냅니다
-
- 만약 서버 프로세스가 데이터 파일에서 데이터를 DB Buffer Cache로 가져와야 할
-
-경우가 생기게 된다면 서버 프로세스는 우선 LRU 리스트의 보조 리스트에서 Free 버퍼를 찾게 됩니다.
-
-그러나 보조 리스트의 버퍼가 모두 사용된 경우에는, 메인 리스트의 cold 영역에서 free 버퍼를 다시 찾게 됩니다.
- 이렇게 free buffer 를 찾다가 특정 개수만큼 찾았는데 free buffer를 못찾게 되면
-scan을 멈추고 DBWR에게 Dirty Buffer를 내려쓰라고 요청을 하게 되는 것입니다.
-그럼 Dirty Buffer가 Free Buffer로 바뀌게 되어 LRU List의 보조 리스트에 추가가 되는 것입니다.
-인스턴스가 최초로 구동된 때는 모든 버퍼들은 LRU List 의 보조 리스트 에서 관리됩니다.
 ```
-래치
- 핫블록(Hot Block) - SQL 문의 작동방식이 소수의 특정 블록을 계속해서 스캔하는 형태로 작성되었다면, 여러 세션이 동시에 이 SQL 문을 수행하는 경우.
+
+
+#### - 요약
+```
+  추후 예정
+```
 
 
 (4) 캐시버퍼 LRU 체인
@@ -357,10 +294,63 @@ scan을 멈추고 DBWR에게 Dirty Buffer를 내려쓰라고 요청을 하게 �
 
 Dirty 리스트* : 캐시 내에서 변경됐지만, 아직 디스크에 기록되지 않은 Dirty버퍼 블록들을 관리.LRUW(LRU Write)리스트 라고도 함.
 LRU 리스트* : 아직 Dirty 리스트로 옮겨지지 않은 나머지 버퍼블록들을 관리함. 
-#### - 요약
+  4. Cache Buffer Chain
+    
+    - 각 Database Buffer는 Data Block Address(DBA)가 Hash Function에 의해 해시되어 Hash Table에 할당되어 관리되는데, 이를 Cache Buffer Chain List라 한다.
+
+    - 즉 Cache Buffer Chain List란 양방향의 링크된 리스트로, 인스턴스가 시작될 때 할당되는 Hash Table로 구성된다.
+
+    -  Hash Table 안의 Bucket은 각 Database Block Buffer들의 Header 정보를 가지며, 이 각 Buffer들은 LRU List 나 
+       LRUW List(Dirty List)의 한 가지에 속한다. 
+
+    - 각 해시 체인은 래치(Latch)에 의해 보호된다.
+### LRU List와 LRUW List
+![Alt text](/assets/images/dbbufferlrulist.png "Oracle 12c")
+#### LRU List(Least Recently Used) 
 ```
-  추후 예정
+  1. 최근에 읽혀진 Datafile Block 을 Buffer Cache에 보관하고, 새로운 Block이 파일에서 읽혀질 필요가 있으면 사용한지 가장 오래된 버퍼들부터 메모리에서 없어지도록 
+
+     관리하기 위한 Buffer Cache 내의 Block List 관리 방법.
+  
+  2. LRU(Least Recently Used) list의 버퍼들은 Free buffer, Pinned Buffer, Dirty Buffe중 하나로 존재하게 된다.
+
+    -메인 리스트 : 사용된 버퍼들의 리스트, Hot 영역과 Cold 영역으로 나눕니다. 
+    -보조 리스트 : 미사용된 버퍼들이나, DBWR에 의해 기록된 버퍼들의 리스트(Free list)
+
 ```
+#### LRUW(LRU Write) List = Dirty list
+```
+  1. 수정되어 디스크에 반영되어야 할 블록들의 리스트.
+     
+  2. LRUW에 모인 Dirty Buffer는 DBWR에 의해 디스크로 쓰여지고 나면 이 버퍼들이 차츰 다른 테이블의 내용들이 읽혀 짐에 따라
+   
+     LRU의 tail부분인 LRU(Lease Recent Used)로 이동되게 된다.
+
+  3. 만약 사용자가 대량의 데이터를 질의하여 버퍼가 필요한데 빈 버퍼가 없다면 사용된 빈도가 제일 작은 블록을
+  
+     찾기 위해 LRU 알고리즘에 의해 LRU list의 맨 끝인 tail 부분부터 검색하기 시작 한다.
+
+     Free로 Mark 되어 다시 사용될 수 있도록 LRU List의 끝부분에 위치하게 됩니다.
+  
+  4. 처음엔 버퍼가 Free 상태인데 사용자가 질의를 해서 디스크에서 테이블의 내용을 읽으면 이 블록들은
+
+     LRU에서 가장 최근에 읽은 것 이므로 HEADER 부분(MRU, Most recently used)에 위치하게 됩니다.
+      
+      -메인 리스트 : 변경된 버퍼들의 리스트
+      -보조 리스트 : 현재 DBWR에 의해 기록 중인 버퍼들의 리스트
+```
+
+
+#### 버퍼 탐색 순환
+**LRU 보조 -> LRU 메인 -> LRUW 메인 -> LRUW 보조순으로 순환하며 버퍼를 탐색한다.**
+
+1. 보조 리스트의 버퍼가 모두 사용된 경우에는,
+2. 메인 리스트의 cold 영역에서 free 버퍼를 다시 찾게 됩니다. 
+ 
+ 이렇게 free buffer 를 찾다가 특정 개수만큼 찾았는데 free buffer를 못찾게 되면
+scan을 멈추고 DBWR에게 Dirty Buffer를 내려쓰라고 요청을 하게 되는 것입니다.
+그럼 Dirty Buffer가 Free Buffer로 바뀌게 되어 LRU List의 보조 리스트에 추가가 되는 것입니다.
+인스턴스가 최초로 구동된 때는 모든 버퍼들은 LRU List 의 보조 리스트 에서 관리됩니다.
 
 ### 2.2.3 Shared Pool
 #### - 개념

@@ -32,12 +32,14 @@ toc: true
 8. SQL 엔진이 SQL을 실행한다.
 ```
 
-| 항목 | 내용 |
-|:---:|:---|
-| **Syntax Check** | 키워드 검사라고도 하며 SELECT, FROM, WHERE 같이 Oracle에서 미리 정해놓은 키워드 부분을 검사한다. |  
-| **Semantic Check** | 테이블 이름, 컬럼 이름처럼 사용자마다 다른 부분을 검사한다. |  
-| **권한 검사** | 어떤 사용자가 해당 오브젝트에 접근 할 수 있는 권한이 있는지 없는지를 확인한다. |  
-
+| 순번 | 항목 | 내용 | 발생 주체 또는 발생 지점 |
+|:-:|:-----|:-------:|:------|
+|1| **Syntax Check** | 키워드 검사라고도 하며 SELECT, FROM, WHERE 같이 Oracle에서 미리 정해놓은 키워드 부분을 검사한다. | Library Cache 및 Data Dictionary Cache |
+|2| **Semantic Check** | SQL문의 오브젝트가 및 컬럼의 존재 여부를 검사한다. | Data Dictionary Cache |
+|3| **권한 검사** | 어떤 사용자가 해당 오브젝트에 접근 할 수 있는 권한이 있는지 없는지를 확인한다. | Data Dictionary Cache |  
+|4| **검색** | Shared Pool에서 동일한 Hash 값을 갖는 실행 계획이 있는지 검사한다.  | Library Cache |
+|5| **Optimization** |  SQL을 가장 빠르고 효율적으로 수행하고자 하는 실행 계획을 생성한다. | Optimizer |
+   
 ### 상세
 ### 요약
 
@@ -59,6 +61,7 @@ User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 �
 - 문법 검사 - 의미 검사 - 권한 검사 - DBMS Optimizer가 실행 계획 생성
 
 # Server Process가 User Process 에서 SQL문장을 받은 다음
+
 1.	Parse
 - 1.1	Soft Parse
   - 1.1.1	문법 검사(Syntax) : 키워드 검사라고도 하며 Oracle에서 미리 정해 놓은 키워드 부분을 검사함
@@ -73,24 +76,28 @@ User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 �
   - 1.2.3	그 실행 계획을 Library Cache에 등록한 후 PGA로 복사해서 가져온다
   - 1.2.4	PGA로 복사해온 실행 계획을 가지고 실행 단계로 넘어간다.
 
-# Library Cache에서 Hash Value를 찾는 과정 
-1. Hash value를 가지고 실행 계획이 있는지 검사 하기 위해 Hash Bucket을 읽는다. 
-2. Hash Bucket에 있는 Hash value를 비교하여 실제 데이터가 저장되어 있는 공간인 공유 커서를 찾는다.
-- 2.1 커서(Cursor)
-  커서란 메모리에 임의의 데이터를 저장하기 위해 만드는 임시 저장 공간. 공유 커서, 세션 커서, 어플리케이션 커서가 있다.
-  - 2.1.1 공유 커서
-    SQL 문장의 실행계획과 관련 정보를 보관하고 있다가 재활용 하다가 Hard Parse의 부담을 줄여 SQL 문장의 수행속도를 빠르게함
-    부모 커서(Parent Cursor)와 자식 커서(Child Cursor)로 나뉘게 된다.
-    부모 커서에는 SQL 문장 자체에 대한 값이 있다.
-    자식 커서에는 Optimizer Mode 정보, 사용자 정보에 대한 값이 있다.
-    동일한 SQL문을 수행해도 서로 다른 사용자가 서로 다른 계정으로 DB에 로그인 했다면 Parent Cursor는 같으나 Child Cursor가 일치하지 않아 커서 공유를 할 수 없다. 
-    그래서 오라클은 '어떤 커서에 어떤 데이터가 들어 있다' 라는 정보가 있는 Hash list로 관리 한다.
-    > Hash list?
-    + 1. 체인 구조로 되어 있다. (Hash value값의 Hash list에는 n번째 커서에는 n번째 실제 데이터와 n+1번째 위치값이 있다.)
-    + 2. Library Cache의 내용을 저장하고 있는 Hash list는 1개 밖에 없다.
-    + 3. Library Cache Latch를 통해 순서를 정한다.
-    + 4. Hash List에 SQL과 실행계획 이 없을 경우 Hard Parse 과정을 수행 한 후 실행계획을 받아서 Library Cache에 신규로 등록한 후 다음 단계로 넘어간다.
-    + 5. 새로 SQL과 실행계획을 등록하려면 Library Cache Latch를 획득한 상태에서 Shared Pool Latch이 필요하다.
+# 검색 과정 - Library Cache에서 Hash Value를 찾는 과정
+1. Server Process는 전달 받은 SQL문을 ASCII 값으로 전환하여 해쉬 함수를 수행 한다.
+2. 해쉬 함수를 수행하고 결과 값인 Hash Value를 받는다.
+3. 실행 계획이 있는지 검사 하기 위해 Hash Value값에 해당하는 Hash Bucket을 읽는다.  
+   ** 해쉬 Bucket은 해쉬 함수를 수행하여 추출될 수 있는 모든 결과에 대해 하나씩 존재한다.  
+   ** 따라서 어떠한 SQL이던 해쉬 함수를 수행하게 되면 하나의 해쉬 Bucket이 선택된다.
+4. Hash Bucket에 있는 Hash value를 비교하여 실제 데이터가 저장되어 있는 공간인 공유 커서를 찾는다.
+  4.1 커서(Cursor)  
+  커서란 메모리에 임의의 데이터를 저장하기 위해 만드는 임시 저장 공간. 공유 커서, 세션 커서, 어플리케이션 커서가 있다.  
+    4.1-1 공유 커서
+      SQL 문장의 실행계획과 관련 정보를 보관하고 있다가 재활용 하다가 Hard Parse의 부담을 줄여 SQL 문장의 수행속도를 빠르게함
+      부모 커서(Parent Cursor)와 자식 커서(Child Cursor)로 나뉘게 된다.
+      부모 커서에는 SQL 문장 자체에 대한 값이 있다.
+      자식 커서에는 Optimizer Mode 정보, 사용자 정보에 대한 값이 있다.
+      동일한 SQL문을 수행해도 서로 다른 사용자가 서로 다른 계정으로 DB에 로그인 했다면 Parent Cursor는 같으나 Child Cursor가 일치하지 않아  커서 공유를 할 수 없다. 
+      그래서 오라클은 '어떤 커서에 어떤 데이터가 들어 있다' 라는 정보가 있는 Hash list로 관리 한다.
+      > Hash list?
+      + 1. 체인 구조로 되어 있다. (Hash value값의 Hash list에는 n번째 커서에는 n번째 실제 데이터와 n+1번째 위치값이 있다.)
+      + 2. Library Cache의 내용을 저장하고 있는 Hash list는 1개 밖에 없다.
+      + 3. Library Cache Latch를 통해 순서를 정한다.
+      + 4. Hash List에 SQL과 실행계획 이 없을 경우 Hard Parse 과정을 수행 한 후 실행계획을 받아서 Library Cache에 신규로 등록한 후 다음   단계로 넘어간다.
+      + 5. 새로 SQL과 실행계획을 등록하려면 Library Cache Latch를 획득한 상태에서 Shared Pool Latch이 필요하다.
 
   - 2.1.2 세션 커서
   - 2.1.3 어플리케이션 커서
@@ -101,14 +108,14 @@ User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 �
 - 3.1 Rule Based Optimizer(RBO) 
   - 3.1.1 미리 정해져 있는 규칙을 사용해서 실행 계획을 세움
   - 3.2.2 RBO 규칙
-    순위 | 접근경로 | ""
-    ---|:---:|---:
-    1 | Single row by ROWID | 
-    2 | Single row by cluster join |
-    3 | Single row by hash cluster key with unique or primary key |
-    4 | Single row by unique or primary key  |
-    `absolute` | 위치 상 **_부모_(조상)요소**를 기준으로 배치 |
-    `fixed` | **브라우저 창**을 기준으로 배치 |
+  | 순위 | 접근경로 | ""
+  | ---|:---:|---:
+  | 1 | Single row by ROWID | 
+  | 2 | Single row by cluster join |
+  | 3 | Single row by hash cluster key with unique or primary key |
+  | 4 | Single row by unique or primary key  |
+  | `absolute` | 위치 상 **_부모_(조상)요소**를 기준으로 배치 |
+  | `fixed` | **브라우저 창**을 기준으로 배치 |
 
  SQL문이 Soft Parse를 시도했는데 실패했을 경우 서버 프로세스가 RBO를 찾아가서 실행 계획을 요청 했다면 RBO는 해당 SQL문 테이블을 꺼내 놓고
  15번 방법부터 하나씩 대입해서 적당한 방법을 요구한다.
@@ -118,3 +125,6 @@ User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 �
 - 3.2 Cost Based Optimizer(CBO)
   - 3.2.1 실행 계획을 세울 때 데이터 딕셔너리 정보(DBA_TABLES OR USER_TABLES)를 보고 판단을 하게 된다.
   - 3.2.2  
+
+# 참고
+[오라클 DOC](https://docs.oracle.com/database/121/TGSQL/tgsql_sqlproc.htm#TGSQL175)
