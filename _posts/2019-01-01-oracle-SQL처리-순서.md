@@ -38,7 +38,7 @@ toc: true
 |2| **Semantic Check** | SQL문의 오브젝트가 및 컬럼의 존재 여부를 검사한다. | Data Dictionary Cache |
 |3| **권한 검사** | 어떤 사용자가 해당 오브젝트에 접근 할 수 있는 권한이 있는지 없는지를 확인한다. | Data Dictionary Cache |  
 |4| **검색** | Shared Pool에서 동일한 Hash 값을 갖는 실행 계획이 있는지 검사한다.  | Library Cache |
-|5| **Optimization** |  SQL을 가장 빠르고 효율적으로 수행하고자 하는 실행 계획을 생성한다. | Optimizer |
+|5| **Optimization** |  SQL을 가장 빠르고 효율적으로 수행하고자 하는 실행 계획을 생성한다. | [Optimizer](https://chodongin.github.io/oracle/oracle-%EC%98%B5%ED%8B%B0%EB%A7%88%EC%9D%B4%EC%A0%80/) |
    
 ### 상세
 ### 요약
