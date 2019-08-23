@@ -289,6 +289,7 @@ View 영역의 항목을 그대로 붙여넣거나 HTML 내보내기 등으로 �
 
 
 ## ○ 출처 
-* [깃허브 마크다운 사용법](https://gist.github.com/ihoneymon/652be052a0727ad59601)
-* [특수문자 HTML 코드](http://www.umsiko.co.za/links/specchar.html)
+* [깃허브 마크다운 사용법](https://gist.github.com/ihoneymon/652be052a0727ad59601)  
+* [HEROPY 마크다운 사용법](https://heropy.blog/2017/09/30/markdown/)  
+* [특수문자 HTML 코드](http://www.umsiko.co.za/links/specchar.html)  
 

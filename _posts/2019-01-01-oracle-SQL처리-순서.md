@@ -11,6 +11,7 @@ toc: true
 # 1. SQL 문장 처리 과정
 ## 1.1 순서
 ### 개념
+
 ```
 1. 사용자가 User Process에서 SQL문장을 수행한다. 
 
@@ -18,7 +19,7 @@ toc: true
 
 3. Server Process는 Syntax Check( 문법 검사 ), Semantic Check(의미 검사)를 한 후 권한 검사를 하게 된다.
 
-4. Library Cache에서 공유되어 있는 실행계획이 있는지 검사한다.
+4. Library Cache에서 공유되어 있는 실행 계획이 있는지 검사한다.
 ------------------------------------Soft Parsing--------------------------------------------------
 
 5. Library Cache에 실행계획이 있다면 바로 SQL 엔진이 SQL을 실행한다.
@@ -39,9 +40,7 @@ toc: true
 |3| **권한 검사** | 어떤 사용자가 해당 오브젝트에 접근 할 수 있는 권한이 있는지 없는지를 확인한다. | Data Dictionary Cache |  
 |4| **검색** | Shared Pool에서 동일한 Hash 값을 갖는 실행 계획이 있는지 검사한다.  | Library Cache |
 |5| **Optimization** |  SQL을 가장 빠르고 효율적으로 수행하고자 하는 실행 계획을 생성한다. | [Optimizer](https://chodongin.github.io/oracle/oracle-%EC%98%B5%ED%8B%B0%EB%A7%88%EC%9D%B4%EC%A0%80/) |
-   
-### 상세
-### 요약
+|6| **Row Source Generation** | 옵티마이저가 생성한 실행계획을 실행 가능한 코드 또는 프로시저형태로 포맷팅 하는 작업이다.  Row-Source는 레코드 집합을 반복 처리하면서 사용자가 요구한 최종 결과집합을 실제적으로 생성하는데 사용되는 제어 구조를 말한다. | Row Source Generator |
 
 # SELECT 문의 처리순서
 
@@ -52,16 +51,17 @@ toc: true
 - D.	Data Dictionary등을 참조하여 실행 계획 생성 (Optimizer)
 2.	BIND : bind variable을 이용시 
 3.	EXECUTE
-- A.	Parse단계에서 만들어진 p코드(parse code)를 처리하는 단계
-- B.	어떤 데이터를 어떻게 가져올지 처리하는 단계
-- C.	SQL 처음 실행 시 Server Process가 데이터 파일에서 데이터를 Data Buffer Cache의 Data Block에 올린 후 Data Buffer Cache에 있는 Data Block을 가져와 PGA영역으로 읽어 들이게 된다. Data        Block에는 여러 개의 행이 있는데 PGA가 여러 개의 행에서 조건에 맞는 행을 가져온다.
+- 실행하게 되면 SQL 엔진은 Row Source Generator가 생성 한 Row Source Tree의 각 행 소스를 실행합니다. DML 처리에서 유일한 필수 단계입니다.
+- Parse단계에서 만들어진 p코드(parse code)를 처리하는 단계
+- 어떤 데이터를 어떻게 가져올지 처리하는 단계
+- SQL 처음 실행 시 Server Process가 데이터 파일에서 데이터를 Data Buffer Cache의 Data Block에 올린 후 Data Buffer Cache에 있는 Data Block을 가져와 PGA영역으로 읽어 들이게 된다. Data        Block에는 여러 개의 행이 있는데 PGA가 여러 개의 행에서 조건에 맞는 행을 가져온다.
 4.	FETCH 
 
 User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 확인 - 동일한 문장이 없으면 Library Cache의 새로운 공간 확보 - Library Cache에 생성된 공간에 수행 SQL문을 올려논다
 - 문법 검사 - 의미 검사 - 권한 검사 - DBMS Optimizer가 실행 계획 생성
 
-# Server Process가 User Process 에서 SQL문장을 받은 다음
-
+# Parse 
+**Parsing 단계에서 SQL문장을 다른 프로세스에서도 처리할 수 있는 데이터 구조로 하나 하나 분리하는 작업이다.**
 1.	Parse
 - 1.1	Soft Parse
   - 1.1.1	문법 검사(Syntax) : 키워드 검사라고도 하며 Oracle에서 미리 정해 놓은 키워드 부분을 검사함
@@ -125,6 +125,25 @@ User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 �
 - 3.2 Cost Based Optimizer(CBO)
   - 3.2.1 실행 계획을 세울 때 데이터 딕셔너리 정보(DBA_TABLES OR USER_TABLES)를 보고 판단을 하게 된다.
   - 3.2.2  
+
+
+4. Row Source Generator
+
+Row Source Generator는 Optimizer로부터 최적의 실행 계획을 수신하고 나머지 데이터베이스에서 사용할 수 있는 반복 실행 계획을 생성하는 소프트웨어다.
+
+반복 계획은 SQL 엔진에 의해 실행될 때 결과 집합을 생성하는 이진 프로그램이다. 그 계획은 단계들의 조합의 형태를 취하고 있다. 각 단계는 행 집합을 반환한다. 다음 단계에서는 이 세트의 행을 사용하거나 마지막 단계는 SQL 문을 실행하는 응용 프로그램으로 행을 반환한다.
+
+행 소스는 행을 반복적으로 처리할 수 있는 제어 구조와 함께 실행 계획의 단계별로 반환되는 행 집합이다. 행 소스는 조인 또는 그룹화 작업의 테이블, 보기 또는 결과가 될 수 있다.
+
+행 소스 생성기는 행 소스 트리를 생성하며, 이 트리는 행 소스 집합이다. 행 원본 트리는 다음 정보를 보여준다.
+
+SQL문에서 참조하는 테이블 순서
+
+SQL문에 언급된 각 테이블에 대한 액세스 방법
+
+SQL문의 Join 작업의 영향을 받는 테이블에 대한 Join 방법
+
+필터, 정렬 또는 집계와 같은 데이터 작업한다.
 
 # 참고
 [오라클 DOC](https://docs.oracle.com/database/121/TGSQL/tgsql_sqlproc.htm#TGSQL175)
