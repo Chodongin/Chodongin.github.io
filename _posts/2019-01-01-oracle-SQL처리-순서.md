@@ -8,6 +8,10 @@ toc: true
 **모든 과정 Server Process에 의해 이뤄진다 !**
 
 ![Alt text](/assets/images/select turn.png "Optional title")
+
+![Alt text](/assets/images/grey-select turn.png "Optional title")
+
+
 # 1. SQL 문장 처리 과정
 ## 1.1 순서
 ### 개념
