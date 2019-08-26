@@ -184,9 +184,12 @@ toc: true
 
 | 항목 | 목적 |
 |:---:|:---|
-| **Shared Pool** | SQL의 빠른 파싱(Parsing) |  
-| **데이터 버퍼 캐쉬** | 데이터 블록의 빠른 엑세스(재사용 포함) |  
-| **리두 로그 버퍼** | 변경 사항을 로그로 기록하여 장애 발생시 복구 |  
+| **Shared Pool** | SQL의 빠른 파싱(Parsing) , 공유 Data를 저장하기 위해 마련된 메모리 공간. |  
+| **Data Buffer Cache** | 데이터 블록의 빠른 엑세스(재사용 포함) |  
+| **Redo Log Buffer** | 변경 사항을 로그로 기록하여 장애 발생시 복구 |  
+| **Java pool** | 오라클 JVM에 접속해 있는 모든 세션에서 사용하는 자바코드를 위한 메모리 영역이다. |  
+| **Large Pool** | MTS(MultiThreaded Server)사용시 UGA(User Global Area)영역을 large pool에 할당하며 백업 및 복구작업과 병렬쿼리 수행시 메세지 버퍼를 위해 사용된다. |  
+| **Streams Pool** | 오라클 스트림(데이터 동기화) 기능 사용시에 필요한 데이터 전송 버퍼를 위해 사용된다. |
 
 #### - 상세
 
@@ -213,8 +216,52 @@ SQL> show sga
 ```
   추후 예정
 ```
+### 2.2.3 Shared Pool
+#### - 개념
+```
+1. SQL을 수행하는 과정에서 파싱의 역할을 수행한다.
+  *파싱 : SQL을 수행 전 수행할 수 있는 SQL인지 검증하고 분석하는 단계
+```
+#### 구성
+```
+1. 라이브러리 캐시  
+SQL실행에 관련된 모든 객체에 대한 정보 관리  
+서버 프로세스가 SQL을 작업할 때 사용하는 작업 공간  
+Shared SQL Area : SQL문장, 파스트리, 실행계획 저장  
+PL/SQL Procedure : PL/SQL문장, 컴파일된 프로그램 및 프로시저 저장  
+Control Structures (Lock, Libray Cache Handles)  
+2. 데이터 딕셔너리 캐시(Row Cache)   
+테이블과 뷰에 대한 정보,구조,사용자등에 대한 시스템 메타 정보 관리  
+3. 예약영역(Reserved Area)   
+BIG OBJECT(SHARED_POOL_RESERVED_MIN_ALLOC에 설정된 크기 이상)를 위한 여분의 메모리 ( 기본설정 : 4400bytes)  
+SHARED_POOL_RESERVED_SIZE : SHARED_POOL_SIZE * 5%   
+4. 시스템영역(Permanent Area)  
+Process, Session, Enqueue, Transaction 등의 목록 정보  
+```
 
-### 2.2.2 Database Buffer Cache
+
+
+
+| 항목 | 내용 |
+|:----:|:--------------------------------|
+| **소프트 파싱** | 검색 단계에서 기존에 동일한 SQL이 수행된 걸 확인하고 해당 SQL의 파싱 정보를 재사용 |  
+| **하드 파싱** | 기존에 동일한 SQL이 수행되었지만 메모리가 부족하여 LRU 알고리즘에 의해 버려지거나 수행된 적이 없는 SQL로 다시 파싱을 수행 |  
+
+[SQL 처리 순서](https://chodongin.github.io/oracle/oracle-SQL%EC%B2%98%EB%A6%AC-%EC%88%9C%EC%84%9C/)
+
+#### - 상세
+
+ 
+#### - 요약
+
+| 목적 | 목적 달성을 위한 요소 |
+|:---:|:-----------------------------------|
+| **파싱(SQL Parsing)을 효과적으로 수행** | - 이전에 수행된 SQL에 대해서 소프트 파싱 유도  - 하드 파싱 시 적은 자원 사용 |  
+
+  ***
+   
+
+### 2.2.3 Database Buffer Cache
 ![Alt text](/assets/images/sga.png "Oracle 12c")
 #### - 개념
   ```
@@ -352,39 +399,7 @@ scan을 멈추고 DBWR에게 Dirty Buffer를 내려쓰라고 요청을 하게 �
 그럼 Dirty Buffer가 Free Buffer로 바뀌게 되어 LRU List의 보조 리스트에 추가가 되는 것입니다.
 인스턴스가 최초로 구동된 때는 모든 버퍼들은 LRU List 의 보조 리스트 에서 관리됩니다.
 
-### 2.2.3 Shared Pool
-#### - 개념
-```
-1. SQL을 수행하는 과정에서 파싱의 역할을 수행한다.
-  *파싱 : SQL을 수행 전 수행할 수 있는 SQL인지 검증하고 분석하는 단계
-```
 
-| 항목 | 내용 |
-|:----:|:--------------------------------|
-| **소프트 파싱** | 검색 단계에서 기존에 동일한 SQL이 수행된 걸 확인하고 해당 SQL의 파싱 정보를 재사용 |  
-| **하드 파싱** | 기존에 동일한 SQL이 수행되었지만 메모리가 부족하여 LRU 알고리즘에 의해 버려지거나 수행된 적이 없는 SQL로 다시 파싱을 수행 |  
-
-[SQL 처리 순서](https://chodongin.github.io/oracle/oracle-SQL%EC%B2%98%EB%A6%AC-%EC%88%9C%EC%84%9C/)
-
-| 항목 | 목적 |
-|:---:|:------------------|
-| **Shared Pool** | SQL의 빠른 파싱(Parsing) |  
-| **데이터 버퍼 캐쉬** | 데이터 블록의 빠른 엑세스(재사용 포함) |  
-| **리두 로그 버퍼** | 변경 사항을 로그로 기록하여 장애 발생시 복구 |  
-
-
-
-#### - 상세
-
- 
-#### - 요약
-
-| 목적 | 목적 달성을 위한 요소 |
-|:---:|:-----------------------------------|
-| **파싱(SQL Parsing)을 효과적으로 수행** | - 이전에 수행된 SQL에 대해서 소프트 파싱 유도  - 하드 파싱 시 적은 자원 사용 |  
-
-  ***
-   
 ### 2.2.8 PGA ( Program Global Area )
 ![Alt text](/assets/images/pga.png "Oracle 12c")
 **PGA DETAIL**  
