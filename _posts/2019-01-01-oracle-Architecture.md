@@ -173,6 +173,9 @@ toc: true
   
 ### 2.2.1 SGA( System Global Area )
 ![Alt text](/assets/images/sga.png "Oracle 12c")
+
+
+v
 #### - 개념
 ```
   1. 인스턴스가 시작될 때 할당되는 공유 메모리 영역
@@ -217,6 +220,8 @@ SQL> show sga
   추후 예정
 ```
 ### 2.2.3 Shared Pool
+![Alt text](/assets/images/sharedPool.png "Oracle 12c")
+
 #### - 개념
 ```
 1. SQL을 수행하는 과정에서 파싱의 역할을 수행한다.
