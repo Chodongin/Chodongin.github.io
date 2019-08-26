@@ -55,10 +55,10 @@ toc: true
 - Parse단계에서 만들어진 p코드(parse code)를 처리하는 단계
 - 어떤 데이터를 어떻게 가져올지 처리하는 단계
 - SQL 처음 실행 시 Server Process가 데이터 파일에서 데이터를 Data Buffer Cache의 Data Block에 올린 후 Data Buffer Cache에 있는 Data Block을 가져와 PGA영역으로 읽어 들이게 된다. Data        Block에는 여러 개의 행이 있는데 PGA가 여러 개의 행에서 조건에 맞는 행을 가져온다.
-4.	FETCH 
-
-User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 확인 - 동일한 문장이 없으면 Library Cache의 새로운 공간 확보 - Library Cache에 생성된 공간에 수행 SQL문을 올려논다
-- 문법 검사 - 의미 검사 - 권한 검사 - DBMS Optimizer가 실행 계획 생성
+4.	Fetch 
+- 메모리에 올라온 Block에는 원하는 데이터와 원하지 않는 데이터가 같이 있다. 하지만 데이터의 I/O 최소 단위는 Block이므로  
+  그 Block에서 사용자가 원하는 데이터만 골라내야 한다. 그 과정을 Fetch라고 한다.
+- 정렬등의 추가 작업이 있을 경우 PGA 공간 에서 Sort 작업이 이루어지며 Fetch 과정에서 완료해서 데이터를 보내주게 된다.
 
 # Parse 
 **Parsing 단계에서 SQL문장을 다른 프로세스에서도 처리할 수 있는 데이터 구조로 하나 하나 분리하는 작업이다.**
@@ -108,14 +108,12 @@ User process - Library Cache에 내가 수행한 SQL문장이 존재 하는지 �
 - 3.1 Rule Based Optimizer(RBO) 
   - 3.1.1 미리 정해져 있는 규칙을 사용해서 실행 계획을 세움
   - 3.2.2 RBO 규칙
-  | 순위 | 접근경로 | ""
-  | ---|:---:|---:
+  | 순위 | 접근경로 | 
+  | ---|:---:|
   | 1 | Single row by ROWID | 
   | 2 | Single row by cluster join |
   | 3 | Single row by hash cluster key with unique or primary key |
   | 4 | Single row by unique or primary key  |
-  | `absolute` | 위치 상 **_부모_(조상)요소**를 기준으로 배치 |
-  | `fixed` | **브라우저 창**을 기준으로 배치 |
 
  SQL문이 Soft Parse를 시도했는데 실패했을 경우 서버 프로세스가 RBO를 찾아가서 실행 계획을 요청 했다면 RBO는 해당 SQL문 테이블을 꺼내 놓고
  15번 방법부터 하나씩 대입해서 적당한 방법을 요구한다.
