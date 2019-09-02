@@ -356,9 +356,9 @@ LRU 리스트* : 아직 Dirty 리스트로 옮겨지지 않은 나머지 버퍼�
        LRUW List(Dirty List)의 한 가지에 속한다. 
 
     - 각 해시 체인은 래치(Latch)에 의해 보호된다.
-### LRU List와 LRUW List
+#### LRU List와 LRUW List
 ![Alt text](/assets/images/dbbufferlrulist.png "Oracle 12c")
-#### LRU List(Least Recently Used) 
+##### LRU List(Least Recently Used) 
 ```
   1. 최근에 읽혀진 Datafile Block 을 Buffer Cache에 보관하고, 새로운 Block이 파일에서 읽혀질 필요가 있으면 사용한지 가장 오래된 버퍼들부터 메모리에서 없어지도록 
 
@@ -370,7 +370,7 @@ LRU 리스트* : 아직 Dirty 리스트로 옮겨지지 않은 나머지 버퍼�
     -보조 리스트 : 미사용된 버퍼들이나, DBWR에 의해 기록된 버퍼들의 리스트(Free list)
 
 ```
-#### LRUW(LRU Write) List = Dirty list
+##### LRUW(LRU Write) List = Dirty list
 ```
   1. 수정되어 디스크에 반영되어야 할 블록들의 리스트.
      
@@ -392,8 +392,7 @@ LRU 리스트* : 아직 Dirty 리스트로 옮겨지지 않은 나머지 버퍼�
       -보조 리스트 : 현재 DBWR에 의해 기록 중인 버퍼들의 리스트
 ```
 
-
-#### 버퍼 탐색 순환
+##### 버퍼 탐색 순환
 **LRU 보조 -> LRU 메인 -> LRUW 메인 -> LRUW 보조순으로 순환하며 버퍼를 탐색한다.**
 
 1. 보조 리스트의 버퍼가 모두 사용된 경우에는,
@@ -403,6 +402,17 @@ LRU 리스트* : 아직 Dirty 리스트로 옮겨지지 않은 나머지 버퍼�
 scan을 멈추고 DBWR에게 Dirty Buffer를 내려쓰라고 요청을 하게 되는 것입니다.
 그럼 Dirty Buffer가 Free Buffer로 바뀌게 되어 LRU List의 보조 리스트에 추가가 되는 것입니다.
 인스턴스가 최초로 구동된 때는 모든 버퍼들은 LRU List 의 보조 리스트 에서 관리됩니다.
+
+### 2.2.4 Redo Log Buffer
+#### 개념
+```
+오라클에서는 데이터에 변경이 생길 경우 만약에 발생할 장애가 발생할 경우 복구를 하기 위해  
+변경되기 전의 내용과 변경된 후의 내용을 모두 기록해 둡니다.
+
+```
+#### 상세
+#### 요약
+
 
 
 ### 2.2.8 PGA ( Program Global Area )

@@ -21,26 +21,37 @@ toc: true
 
 5. Server Process는 받은 SQL을 SGA의 영역에 있는 Shared Pool의 **Library Cache**에서 **Syntax Check**를 한다.
 
-6. **Semantic Chec**k를 위해 **Data Dictionary Cache를 조회**하게 된다. 
+6. **Semantic Check**를 위해 **Data Dictionary Cache를 조회**하게 된다. 
 
-7. Server Process는 SQL문들 **ASCII 값**으로 전환하여 Hash 함수를 수행하고 결과 값인 **Hash Value**를 통해  
+7. Parsing Tree를 만드는 동안 테이블이 삭제되면 안되므로 **아주 잠깐** 테이블에 **TM Lock을 수행**한다.
+
+8. Server Process는 SQL문들 **ASCII 값**으로 전환하여 Hash 함수를 수행하고 결과 값인 **Hash Value**를 통해  
    Library Cache에있는 **같은 Hash 값**을 갖고 있는 Hash Bucket을 찾고 Hash List를 읽어 해당 Hash Bucket에서   
    원하는 값을 갖고 있는 Cursor의 위치를 찾아 **Execution Plan**이 있는지 **검색**한다. 
 
-8. Execution Plan이 **있을경우** SQL문을 **실행** 처리한다. **없을 경우** **실행 계획을 생성**한다. 다음은 실행계획이 없을 경우 이다.
+9. Execution Plan이 **있을경우** SQL문을 **실행** 처리한다. **없을 경우** **실행 계획을 생성**한다. 다음은 실행계획이 없을 경우 이다.
 
-9. **Optimizer**가 Data Dictionary를 참고해서 **실행계획**을 생성 한다.
+10. **Optimizer**가 Data Dictionary를 참고해서 **실행계획**을 생성 한다.
 
-10. **Row Source Generator**로부터 **Row Source Tree**를 생성한다.
+11. **Row Source Generator**로부터 **Row Source Tree**를 생성한다.
 
-11. Library Cache에 새로운 공간을 확보하고 Optimizer로부터 받은 실행 계획을 등록한다.
+12. Library Cache에 새로운 공간을 확보하고 Optimizer로부터 받은 실행 계획을 등록한다.
 
-12. **Execute(실행)**이란 단계는 하드 디스크의 **데이터 파일**에서 데이터가 들어 있는 블록을 찾아 **Database Buffer Cache**로 **복사**해 오는 과정을 말한다.
+13. **Execute(실행)**이란 단계는 하드 디스크의 **데이터 파일**에서 데이터가 들어 있는 블록을 찾아 **Database Buffer Cache**로 **복사**해 오는 과정을 말한다.
 
 ## 2.SELECT문
 
-13. Fetch 과정을 수행한다.
+14. **Fetch** 과정을 수행한다.
 
 ## 3.UPDATE문
 
-13. TM락을 
+15. SQL 수행하기 전에 리두 로그 버퍼에 작업에 대한 로그를 기록한다. - Write Ahead Loging(Log Ahead) 기법 
+
+16. 실제 SQL을 수행 하기 전에 해당 데이터들에 TX락이라는 로우 레벨 락을 건다.
+
+17.  Undo Blcok을 Data Buffer Cache에 적재한다.
+
+18. Update를 수행하고자 하는 Data Block들을 Data Buffer Cache에 적재한다.
+
+19. 
+
