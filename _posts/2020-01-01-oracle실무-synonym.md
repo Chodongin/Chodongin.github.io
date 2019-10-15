@@ -1,7 +1,7 @@
 ---
 title: "Oracle 실무 Synonym ora-38818"
 categories: 
-  - Oracle실무
+  - Oracle 실무
 last_modified_at: 2020-01-01T23:00:00+09:00
 toc: true
 ---
