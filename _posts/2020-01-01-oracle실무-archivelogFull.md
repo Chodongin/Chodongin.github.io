@@ -11,7 +11,7 @@ toc: true
 # Oracle 10g Archive Log 파일 관리
 
 # 증상
-```
+```js
 SQL> alter database open;
 alter database open
 *
@@ -25,7 +25,9 @@ ORA-00312: online log 2 thread 1:
 ```
 # Archive Log 파일을 정리
 1) db_recovery_file_dest_size를 증가시켜 주면 된다. 바로 반영됩니다.
-    SQL> alter system set db_recovery_file_dest_size=xG;
+```js
+  SQL> alter system set db_recovery_file_dest_size=xG;
+```
 
 2) Stop using the db_recovery_file_dest by unsetting the parameter.
    ( This assumes you never really wanted to use this option )
@@ -33,7 +35,7 @@ ORA-00312: online log 2 thread 1:
 3)  rman repository/Controlfile 에서 엔트리들을 삭제한다.
 
  아래 명령으로 최대치 까지의 로그 사용량 확인
-```
+```js
 SQL> conn / as sysdba
 SQL> SELECT * FROM V$RECOVERY_FILE_DEST;
 NAME                                      SPACE_LIMIT  SPACE_USED  SPACE_RECLAIMABLE NUMBER_OF_FILES
@@ -44,14 +46,10 @@ NAME                                      SPACE_LIMIT  SPACE_USED  SPACE_RECLAIM
 -- 다음과 같이 조치한다.
 -- RMAN 사용해서 ARCHIVE LOG 삭제
 
-```
-Recovery Manager: Release 10.2.0.2.0 - Production on Fri Nov 2 19:40:19 2012
+```js
  
-Copyright (c) 1982, 2005, Oracle.  All rights reserved.
+$> rman target /
  
-RMAN> connect target /
- 
-connected to target database: ORACLE3 (DBID=642158494)
  
 -- 로그 리스트 조회
 RMAN> LIST ARCHIVELOG LIKE '%.arc';
@@ -67,10 +65,10 @@ Key     Thrd Seq     S Low Time  Name
  
 -- 전부 삭제
 RMAN> DELETE ARCHIVELOG LIKE '%.arc';
-```
+
 
 - 만료된 로그 삭제(만료되지 않은 로그는 존재 유지)
-```
+
 RMAN> LIST ARCHIVELOG LIKE '%.arc';
  
 List of Archived Log Copies
@@ -114,13 +112,13 @@ specification does not match any archive log in the recovery catalog
 
 # 하나씩 지우는게 번거러울 경우 아래와 같이 한번에 지우는 방법도 있음.
 1. os 상에서 우선 파일을 삭제한다.
-```
+```js
    # cd $ORACLE_BASE/flash_recovery_area/$ORACLE_SID/archivelog/yyyy_mm_dd
    # rm -r $ORACLE_BASE/flash_recovery_area/$ORACLE_SID/archivelog/'삭제할 디렉토리명'
 ```
 
 2. RMAN을 실행한다.
-```
+```js
   # $ORACLE_HOME/bin/rman
   RMAN>connect target /
   RMAN>crosscheck archivelog all; -> marks the controlfile that the archives have been deleted
