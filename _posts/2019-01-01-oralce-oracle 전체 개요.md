@@ -53,5 +53,5 @@ toc: true
 
 18. Update를 수행하고자 하는 Data Block들을 Data Buffer Cache에 적재한다.
 
-19. 
+19.  
 
